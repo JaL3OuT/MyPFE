@@ -33,4 +33,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main_admin">MainAdmin</string>
+    <string name="tab_text_1">citoyens</string>
+    <string name="tab_text_2">traveaux</string>
+    <string name="tab_text_3">rapport</string>
 </resources>

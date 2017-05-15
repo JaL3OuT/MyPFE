@@ -2,10 +2,11 @@ package com.pfe.mjihe.mypfe.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +16,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
+import com.pfe.mjihe.mypfe.admin.MainAdmin;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,8 +38,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        initView();
         initInstance();
+        initView();
         initListener();
     }
 
@@ -50,9 +57,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void initInstance() {
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null){
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            finish();
+
+        if (mAuth.getCurrentUser() != null) {
+            getUserDetail();
         }
 
         mDialog = new ProgressDialog(this);
@@ -61,39 +68,60 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean isEmpty() {
-        boolean empty = false;
+        boolean mempty = false;
         if (TextUtils.isEmpty(tEmail.getText())) {
             tEmail.setError("Champs Vide");
-            empty = true;
+            mempty = true;
         }
 
         if (TextUtils.isEmpty(tPassword.getText())) {
             tPassword.setError("Champs Vide");
-            empty = true;
+            mempty = true;
         }
-        return empty;
+        return mempty;
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.register){
-          startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-        }else{
-            if(!isEmpty())
+        if (v.getId() == R.id.register) {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        } else {
+            if (!isEmpty()) {
                 mDialog.show();
-            mAuth.signInWithEmailAndPassword(tEmail.getText().toString(), tPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-                        mDialog.dismiss();
-                        Toast.makeText(LoginActivity.this, "Loged IN", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
-                    }else{
-                        Toast.makeText(LoginActivity.this, "Email ou password erronée", Toast.LENGTH_SHORT).show();
+                mAuth.signInWithEmailAndPassword(tEmail.getText().toString(), tPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Loged IN", Toast.LENGTH_SHORT).show();
+                            getUserDetail();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Email ou password erronée", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
+    }
+
+    private void getUserDetail() {
+        DatabaseReference mReference = FirebaseDatabase.getInstance().getReference("user").child(mAuth.getCurrentUser().getUid());
+        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mDialog.dismiss();
+                Log.e("MyTag", "onDataChange: " + dataSnapshot.child("type").getValue().toString());
+                if (dataSnapshot.child("type").getValue().toString().equals("user")) {
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                } else {
+                    startActivity(new Intent(LoginActivity.this, MainAdmin.class));
+                }
+                finish();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

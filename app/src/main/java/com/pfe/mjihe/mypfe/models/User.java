@@ -13,8 +13,13 @@ public class User implements Serializable {
     private String email;
     private String gouvernorat;
     private String adresse;
+    private String type;
+
+
+    private Wallet wallet;
 
     public User() {
+
     }
 
     public String getNom() {
@@ -56,4 +61,27 @@ public class User implements Serializable {
     public void setAdresse(String adresse) {
         this.adresse = adresse;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public com.pfe.mjihe.mypfe.models.Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+
+
+
+
+
+
 }

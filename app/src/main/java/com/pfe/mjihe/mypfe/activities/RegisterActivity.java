@@ -1,9 +1,9 @@
 package com.pfe.mjihe.mypfe.activities;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.models.User;
+import com.pfe.mjihe.mypfe.models.Wallet;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -127,11 +128,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void addUser(String uid) {
+        String tUser = "user";
         User u = new User();
+        Wallet w = new Wallet();
         u.setEmail(email.getText().toString());
         u.setGouvernorat(gov.getSelectedItem().toString());
         u.setNom(nom.getText().toString());
         u.setPrenom(prenom.getText().toString());
+        u.setType(tUser);
+        u.setWallet(w);
         mRef.child("user").child(uid).setValue(u).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
