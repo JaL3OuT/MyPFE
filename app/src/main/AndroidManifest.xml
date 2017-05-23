@@ -11,12 +11,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
     <uses-feature android:name="android.hardware.camera2" />
-
 
     <permission
         android:name="com.example.permission.MAPS_RECEIVE"
@@ -52,7 +50,8 @@
             android:name=".admin.MainAdmin"
             android:label="@string/title_activity_main_admin"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.AddWalletFragment"></activity>
+        <activity android:name=".activities.AddWalletFragment" />
+        <activity android:name=".activities.WalletActivity"></activity>
     </application>
 
 </manifest>

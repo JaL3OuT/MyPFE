@@ -1,7 +1,10 @@
 package com.pfe.mjihe.mypfe.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -26,21 +29,23 @@ import com.pfe.mjihe.mypfe.admin.MainAdmin;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    String etat;
     private FirebaseAuth mAuth;
     private Button bLogin;
     private Button bRegister;
     private TextView tEmail;
     private TextView tPassword;
-
     private ProgressDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        testInternet();
         initInstance();
         initView();
         initListener();
+
     }
 
     private void initListener() {
@@ -83,6 +88,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+
         if (v.getId() == R.id.register) {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         } else {
@@ -123,5 +129,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
+    }
+
+    void testInternet() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        etat = activeNetwork.toString();
+        Log.e("MyTag", "connected: " + etat);
+        Toast.makeText(this, etat, Toast.LENGTH_SHORT).show();
     }
 }

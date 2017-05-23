@@ -1,8 +1,9 @@
 package com.pfe.mjihe.mypfe.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.models.Wallet;
 
-public class AddWalletFragment extends AppCompatActivity {
+public class AddWalletFragment extends Activity {
 
     private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
@@ -103,6 +104,10 @@ public class AddWalletFragment extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(AddWalletFragment.this, "Wallet cree", Toast.LENGTH_SHORT).show();
+                    Intent in = new Intent(AddWalletFragment.this, WalletActivity.class);
+                    startActivityForResult(in, 101);
+                    finish();
+
                 }
             }
         });

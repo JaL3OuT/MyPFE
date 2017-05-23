@@ -1,5 +1,6 @@
 package com.pfe.mjihe.mypfe.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,7 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.pfe.mjihe.mypfe.R;
+import com.pfe.mjihe.mypfe.activities.LoginActivity;
 import com.pfe.mjihe.mypfe.admin.fragment.BlankFragment;
 import com.pfe.mjihe.mypfe.admin.fragment.MapCity;
 import com.pfe.mjihe.mypfe.admin.fragment.MapTabedCitoyen;
@@ -32,11 +35,13 @@ public class MainAdmin extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
+        mAuth = FirebaseAuth.getInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,7 +78,11 @@ public class MainAdmin extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            mAuth.signOut();
+            Intent in = new Intent(MainAdmin.this, LoginActivity.class);
+            in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(in);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

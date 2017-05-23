@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,10 +32,11 @@ import com.pfe.mjihe.mypfe.fragments.WalletFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    static FragmentManager fm;
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
-    private FragmentManager fm;
+    private FirebaseUser mUser;
 
 
     @Override
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
         fm = getFragmentManager();
+        mUser = mAuth.getCurrentUser();
 
     }
 
@@ -133,8 +136,39 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.wallet) {
+            mRef.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String testexist = dataSnapshot.child("wallet").child("existe").getValue().toString();
+                    Log.e("connect", "onDataChange: " + dataSnapshot.child("wallet").child("existe").getValue().toString());
+                    Log.e("connect", "onDataChange2: " + testexist);
+                    // if (testexist == "true") {
+                    //   fm.beginTransaction().replace(R.id.container, new Wallet_SoldeFragment()).commit();
+                    //} else {
+                    //   fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
+                    //}
+                    switch (testexist) {
+                        case "true ":
+                            Log.e("connect", "onDataChange2: " + testexist);
+                            Intent in = new Intent(getApplicationContext(), WalletActivity.class);
+                            startActivity(in);
+                            break;
+                        case "false":
+                            Log.e("connect", "onDataChange3: " + testexist);
 
-            fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
+                            fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
+                            break;
+
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+
+
         }
         if (id == R.id.rapport) {
             fm.beginTransaction().replace(R.id.container, new RepportFragment()).commit();

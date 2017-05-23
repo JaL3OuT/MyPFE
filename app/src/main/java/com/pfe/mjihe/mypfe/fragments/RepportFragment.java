@@ -52,7 +52,6 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class RepportFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private FirebaseDatabase mDatabase;
@@ -67,15 +66,11 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
     private EditText rapport;
     private View rootview;
     private LatLng loc;
-
     public RepportFragment() {
         // Required empty public constructor
     }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         initializeGoogleClient();
         rootview = inflater.inflate(R.layout.fragment_repport, container, false);
@@ -92,18 +87,13 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
         }
         initview();
         initListener();
-
-
         return rootview;
     }
-
     private void initListener() {
         envoyer.setOnClickListener(this);
         prendre.setOnClickListener(this);
         importer.setOnClickListener(this);
     }
-
-
     private void initview() {
         apercu = (ImageView) rootview.findViewById(R.id.imageView);
         envoyer = (Button) rootview.findViewById(R.id.envoyer);
@@ -112,12 +102,12 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
         rapport = (EditText) rootview.findViewById(R.id.textrapport);
 
     }
-
     private void envoyerRapport() {
         initFirebase();
         final ProgressDialog mDialog = new ProgressDialog(getActivity());
         mDialog.setTitle("Chargment");
         mDialog.setMessage("Attendez SVP !!");
+        mDialog.show();
         //Log.d("HelloTag", "envoyerRapport: " + ref.getPath());
         apercu.setDrawingCacheEnabled(true);
         apercu.buildDrawingCache();
@@ -144,7 +134,6 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
 
 
     }
-
     public void initializeGoogleClient() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -154,21 +143,17 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                     .build();
         }
     }
-
     @Override
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
-
     void prendrePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
-
     private void importerPhoto() {
     }
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -181,7 +166,6 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                 break;
         }
     }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
@@ -189,7 +173,6 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             apercu.setImageBitmap(imageBitmap);
         }
     }
-
     public void requestPermission() {
 
         ActivityCompat.requestPermissions(getActivity(), new String[]{
@@ -197,7 +180,6 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                 CAMERA,
         }, PERMISSION_REQUEST_CODE);
     }
-
     private void initFirebase() {
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
@@ -205,7 +187,6 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
         mUser = mAuth.getCurrentUser();
         mStorageReference = FirebaseStorage.getInstance("gs://jipfe-6c4b8.appspot.com").getReference();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode > PERMISSION_REQUEST_CODE) {
@@ -218,8 +199,6 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             }
         }
     }
-
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -244,17 +223,14 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
 
         }
     }
-
     @Override
     public void onConnectionSuspended(int i) {
 
     }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d("HelloUse", "onConnectionFailed: " + connectionResult.getErrorMessage());
     }
-
     void initGps() {
         LocationManager service = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         boolean enabled = service
