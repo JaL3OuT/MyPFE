@@ -27,6 +27,7 @@ import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.fragments.FragmentMap;
 import com.pfe.mjihe.mypfe.fragments.RepportFragment;
 import com.pfe.mjihe.mypfe.fragments.WalletFragment;
+import com.pfe.mjihe.mypfe.models.Wallet;
 
 
 public class MainActivity extends AppCompatActivity
@@ -139,24 +140,32 @@ public class MainActivity extends AppCompatActivity
             mRef.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    String testexist = dataSnapshot.child("wallet").child("existe").getValue().toString();
-                    Log.e("connect", "onDataChange: " + dataSnapshot.child("wallet").child("existe").getValue().toString());
-                    Log.e("connect", "onDataChange2: " + testexist);
+                    // String testexist = dataSnapshot.child("wallet").child("existe").getValue().toString();
+                    //Log.e("connect1", "onDataChange: " + dataSnapshot.child("wallet").child("existe").getValue().toString());
+                    //Log.e("connect1", "onDataChange1: " + testexist);
                     // if (testexist == "true") {
                     //   fm.beginTransaction().replace(R.id.container, new Wallet_SoldeFragment()).commit();
                     //} else {
                     //   fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
                     //}
+                    String testexist;
+                    Wallet w;
+                    w = dataSnapshot.child("wallet").getValue(Wallet.class);
+                    testexist = w.getExiste();
+                    Log.e("connect1", "onDataChange1: " + testexist);
                     switch (testexist) {
                         case "true ":
-                            Log.e("connect", "onDataChange2: " + testexist);
+                            Log.e("connect1", "onDataChange1: " + testexist);
                             Intent in = new Intent(getApplicationContext(), WalletActivity.class);
                             startActivity(in);
                             break;
                         case "false":
-                            Log.e("connect", "onDataChange3: " + testexist);
+                            Log.e("connect", "onDataChange3: " + dataSnapshot.child("wallet").child("existe").getValue().toString());
 
                             fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
+                            break;
+                        case "":
+                            Log.e("connect1", "onDataChange1: " + testexist);
                             break;
 
                     }
