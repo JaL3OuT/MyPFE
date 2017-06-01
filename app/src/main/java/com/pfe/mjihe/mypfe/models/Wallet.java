@@ -14,6 +14,7 @@ public class Wallet implements Serializable {
     private String codeEdinar;
     private Double solde;
     private String existe;
+    private String pinWallet;
 
     public Wallet() {
         setExiste("false");
@@ -66,5 +67,26 @@ public class Wallet implements Serializable {
 
     public void setExiste(String existe) {
         this.existe = existe;
+    }
+
+    public String getPinWallet() {
+        return pinWallet;
+    }
+
+    public void setPinWallet(String pinWallet) {
+        this.pinWallet = pinWallet;
+    }
+
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "cin='" + cin + '\'' +
+                ", pin='" + pin + '\'' +
+                ", codeWallet='" + codeWallet + '\'' +
+                ", codeEdinar='" + codeEdinar + '\'' +
+                ", solde=" + solde +
+                ", existe='" + existe + '\'' +
+                ", pinWallet='" + pinWallet + '\'' +
+                '}';
     }
 }

@@ -86,7 +86,6 @@ public class Wallet_SoldeFragment extends Fragment implements View.OnClickListen
                 Log.e("connect", "onDataChange2: " + sommeWallet);
                 msg.setText(sommeWallet);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }

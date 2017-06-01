@@ -45,9 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         initInstance();
         initView();
         initListener();
-
     }
-
     private void initListener() {
         bLogin.setOnClickListener(this);
         bRegister.setOnClickListener(this);
@@ -71,14 +69,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mDialog.setTitle("Chargment");
         mDialog.setMessage("Attendez SVP !!");
     }
-
     private boolean isEmpty() {
         boolean mempty = false;
         if (TextUtils.isEmpty(tEmail.getText())) {
             tEmail.setError("Champs Vide");
             mempty = true;
         }
-
         if (TextUtils.isEmpty(tPassword.getText())) {
             tPassword.setError("Champs Vide");
             mempty = true;

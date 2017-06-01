@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -33,20 +34,26 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.models.Rapport;
+import com.pfe.mjihe.mypfe.models.User;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
 import static android.app.Activity.RESULT_OK;
-
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,6 +61,10 @@ import static android.app.Activity.RESULT_OK;
 public class RepportFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSION_REQUEST_CODE = 200;
+    double lat, lang;
+    long datestamp;
+    private SharedPreferences prefr;
+    private SharedPreferences.Editor edit2, edit3, edit1;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
@@ -63,17 +74,20 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
     private Location mLastLocation;
     private ImageView apercu;
     private Button envoyer, prendre, importer;
-    private EditText rapport;
+    private EditText rapporttext;
     private View rootview;
     private LatLng loc;
+    private String date;
+
     public RepportFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         initializeGoogleClient();
-        rootview = inflater.inflate(R.layout.fragment_repport, container, false);
+        rootview = inflater.inflate(R.layout.fragment_repport_client, container, false);
         if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.CAMERA) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
@@ -86,23 +100,32 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                     1);
         }
         initview();
+        getdate();
         initListener();
+
         return rootview;
     }
+
     private void initListener() {
         envoyer.setOnClickListener(this);
         prendre.setOnClickListener(this);
         importer.setOnClickListener(this);
     }
+
     private void initview() {
         apercu = (ImageView) rootview.findViewById(R.id.imageView);
         envoyer = (Button) rootview.findViewById(R.id.envoyer);
         prendre = (Button) rootview.findViewById(R.id.prendrephoto);
         importer = (Button) rootview.findViewById(R.id.importerphoto);
-        rapport = (EditText) rootview.findViewById(R.id.textrapport);
-
+        rapporttext = (EditText) rootview.findViewById(R.id.textrapport);
+        getadressuser();
     }
+
     private void envoyerRapport() {
+        final String gov, local, comun;
+        gov = prefr.getString("governorat", null);
+        local = prefr.getString("localite", null);
+        comun = prefr.getString("commun", null);
         initFirebase();
         final ProgressDialog mDialog = new ProgressDialog(getActivity());
         mDialog.setTitle("Chargment");
@@ -120,20 +143,45 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d("HelloUrl", "onSuccess: " + taskSnapshot.getDownloadUrl());
-                Rapport rp = new Rapport(taskSnapshot.getDownloadUrl().toString(), rapport.getText().toString(), loc);
+                Rapport rp = new Rapport(mUser.getUid().toString(), taskSnapshot.getDownloadUrl().toString(), rapporttext.getText().toString(), date, lat, lang);
                 //String key = mRef.child("Rapport").child(mUser.getUid()).getKey();
-                mRef.child("Rapport").child(mUser.getUid()).child(String.valueOf(System.currentTimeMillis() / 1000)).setValue(rp).addOnCompleteListener(new OnCompleteListener<Void>() {
+                mRef.child("Rapport").child(gov).child(comun).child(local).child(String.valueOf(System.currentTimeMillis() / 1000)).setValue(rp).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         mDialog.dismiss();
+
+
                         Toast.makeText(getActivity(), "Rapport added !", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
-
-
     }
+
+    public void getadressuser() {
+        initFirebase();
+        mRef.child("user").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                prefr = getActivity().getSharedPreferences("PREF", MODE_PRIVATE);
+                edit3 = prefr.edit();
+                edit2 = prefr.edit();
+                edit1 = prefr.edit();
+                edit1.putString("governorat", user.getGouvernorat().toString());
+                edit2.putString("commun", user.getComunn().toString());
+                edit3.putString("localite", user.getLocalite().toString());
+                edit1.apply();
+                edit2.apply();
+                edit3.apply();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
     public void initializeGoogleClient() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -143,17 +191,21 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                     .build();
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
+
     void prendrePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
+
     private void importerPhoto() {
     }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -166,6 +218,7 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                 break;
         }
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
@@ -173,6 +226,7 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             apercu.setImageBitmap(imageBitmap);
         }
     }
+
     public void requestPermission() {
 
         ActivityCompat.requestPermissions(getActivity(), new String[]{
@@ -180,6 +234,7 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
                 CAMERA,
         }, PERMISSION_REQUEST_CODE);
     }
+
     private void initFirebase() {
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
@@ -187,6 +242,7 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
         mUser = mAuth.getCurrentUser();
         mStorageReference = FirebaseStorage.getInstance("gs://jipfe-6c4b8.appspot.com").getReference();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode > PERMISSION_REQUEST_CODE) {
@@ -199,6 +255,7 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             }
         }
     }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -216,21 +273,27 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
         if (mLastLocation != null) {
             //Log.e("TAG", "onConnected: " + String.valueOf(mLastLocation.getLatitude()));
             loc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+            lat = loc.latitude;
+            lang = loc.longitude;
         } else {
-            initGps();
+
             Toast.makeText(getActivity(), "No Location Found", Toast.LENGTH_SHORT).show();
             initGps();
 
         }
     }
+
     @Override
     public void onConnectionSuspended(int i) {
 
     }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d("HelloUse", "onConnectionFailed: " + connectionResult.getErrorMessage());
     }
+
     void initGps() {
         LocationManager service = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         boolean enabled = service
@@ -240,4 +303,13 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             startActivity(intent);
         }
     }
+
+    private void getdate() {
+        datestamp = System.currentTimeMillis();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        Date netDate = (new Date(datestamp));
+        date = sdf.format(netDate);
+    }
+
 }

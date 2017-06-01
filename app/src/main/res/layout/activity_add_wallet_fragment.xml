@@ -13,7 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="2dp"
-        android:hint="Numero CIN" />
+        android:hint="Numero CIN"
+        android:inputType="number"
+        android:maxLength="8" />
 
 
     <android.support.design.widget.TextInputEditText
@@ -21,7 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="2dp"
-        android:hint="Dernier 4 chiffres de la carte E-Dinar" />
+        android:hint="Dernier 4 chiffres de la carte E-Dinar"
+        android:inputType="number"
+        android:maxLength="4" />
 
 
     <android.support.design.widget.TextInputEditText
@@ -30,7 +34,17 @@
         android:layout_height="wrap_content"
         android:elevation="2dp"
         android:hint="code pin 4 chiffre"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:maxLength="4" />
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/pinWallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:hint="Créer code pin Wallet"
+        android:inputType="number"
+        android:maxLength="4" />
 
     <Button
         android:id="@+id/add"

@@ -3,6 +3,7 @@ package com.pfe.mjihe.mypfe.activities;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,10 +26,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
+import com.pfe.mjihe.mypfe.fragments.AccueilFragment;
 import com.pfe.mjihe.mypfe.fragments.FragmentMap;
 import com.pfe.mjihe.mypfe.fragments.RepportFragment;
 import com.pfe.mjihe.mypfe.fragments.WalletFragment;
-import com.pfe.mjihe.mypfe.models.Wallet;
+import com.pfe.mjihe.mypfe.models.User;
 
 
 public class MainActivity extends AppCompatActivity
@@ -38,7 +41,9 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
     private FirebaseUser mUser;
-
+    private String testexist;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,8 @@ public class MainActivity extends AppCompatActivity
         dialog.setMessage("attendez svp !!!!");
         dialog.show();
         initInstance();
+
+        getWalletTest();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,22 +74,16 @@ public class MainActivity extends AppCompatActivity
                 Log.e("TAG", "onDataChange: " + dataSnapshot.getChildrenCount());
                 ((TextView) v.findViewById(R.id.headernom)).setText(dataSnapshot.child("nom").getValue().toString());
                 ((TextView) v.findViewById(R.id.headermail)).setText(dataSnapshot.child("email").getValue().toString());
-
                 dialog.dismiss();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
-
         navigationView.setNavigationItemSelectedListener(this);
+        fm.beginTransaction().replace(R.id.container, new AccueilFragment()).commit();
     }
-
     private void initInstance() {
-
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
@@ -90,8 +91,6 @@ public class MainActivity extends AppCompatActivity
         mUser = mAuth.getCurrentUser();
 
     }
-
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -131,61 +130,52 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        if (id == R.id.accueil) {
+            fm.beginTransaction().replace(R.id.container, new AccueilFragment()).commit();
+        }
 
         if (id == R.id.map) {
             fm.beginTransaction().replace(R.id.container, new FragmentMap()).commit();
         }
-
         if (id == R.id.wallet) {
-            mRef.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // String testexist = dataSnapshot.child("wallet").child("existe").getValue().toString();
-                    //Log.e("connect1", "onDataChange: " + dataSnapshot.child("wallet").child("existe").getValue().toString());
-                    //Log.e("connect1", "onDataChange1: " + testexist);
-                    // if (testexist == "true") {
-                    //   fm.beginTransaction().replace(R.id.container, new Wallet_SoldeFragment()).commit();
-                    //} else {
-                    //   fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
-                    //}
-                    String testexist;
-                    Wallet w;
-                    w = dataSnapshot.child("wallet").getValue(Wallet.class);
-                    testexist = w.getExiste();
-                    Log.e("connect1", "onDataChange1: " + testexist);
-                    switch (testexist) {
-                        case "true ":
-                            Log.e("connect1", "onDataChange1: " + testexist);
-                            Intent in = new Intent(getApplicationContext(), WalletActivity.class);
-                            startActivity(in);
-                            break;
-                        case "false":
-                            Log.e("connect", "onDataChange3: " + dataSnapshot.child("wallet").child("existe").getValue().toString());
-
-                            fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
-                            break;
-                        case "":
-                            Log.e("connect1", "onDataChange1: " + testexist);
-                            break;
-
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-
-
+            testexist = pref.getString("IS_EXIST", "No");
+            if (testexist.equals("true")) {
+                Toast.makeText(getApplicationContext(), testexist, Toast.LENGTH_LONG).show();
+                Intent in = new Intent(getApplicationContext(), CodePinWallet.class);
+                startActivity(in);
+            } else {
+                fm.beginTransaction().replace(R.id.container, new WalletFragment()).commit();
+            }
         }
-        if (id == R.id.rapport) {
+        if (id == R.id.rapportadd) {
             fm.beginTransaction().replace(R.id.container, new RepportFragment()).commit();
         }
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void getWalletTest() {
+        mRef.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User user = dataSnapshot.getValue(User.class);
+                Log.d("HelloUser", "onDataChange: " + user.getWallet().getExiste());
+                pref = getSharedPreferences("PREF", MODE_PRIVATE);
+                edit = pref.edit();
+                edit.putString("IS_EXIST", user.getWallet().getExiste());
+                edit.apply();
+                //Log.d("HelloUser", "onDataChange: " + user.getWallet().getExiste());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+
 }

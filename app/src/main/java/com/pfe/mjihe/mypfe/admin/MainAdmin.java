@@ -18,6 +18,7 @@ import com.pfe.mjihe.mypfe.activities.LoginActivity;
 import com.pfe.mjihe.mypfe.admin.fragment.BlankFragment;
 import com.pfe.mjihe.mypfe.admin.fragment.MapCity;
 import com.pfe.mjihe.mypfe.admin.fragment.MapTabedCitoyen;
+import com.pfe.mjihe.mypfe.admin.fragment.rapport;
 
 public class MainAdmin extends AppCompatActivity {
 
@@ -109,15 +110,14 @@ public class MainAdmin extends AppCompatActivity {
             switch (position) {
                 case 0:
                     fragment = new MapTabedCitoyen();
-
                     break;
                 case 1:
                     fragment = MapCity.newInstance(4);
                     MapCity.newInstance(30).show(getSupportFragmentManager(), "dialog");
                     break;
                 case 2:
-                    fragment = new BlankFragment();
-                    MapCity.newInstance(30).show(getSupportFragmentManager(), "dialog");
+                    fragment = new rapport();
+
                     break;
                 default:
                     fragment = new BlankFragment();

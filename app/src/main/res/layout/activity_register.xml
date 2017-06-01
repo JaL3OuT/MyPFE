@@ -16,15 +16,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/toolbar"
-        android:layout_alignParentStart="true">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -71,6 +71,18 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/cin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="CIN"
+                android:inputType="number"
+                android:maxLength="8" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/toolbar">
@@ -111,17 +123,64 @@
 
             <Spinner
                 android:id="@+id/gov"
-                android:entries="@array/gov"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:entries="@array/gov" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Municipalité"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/commun"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
+
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Localité"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/localite"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <Button
         android:id="@+id/register"
-        android:text="Register"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimaryDark"
+        android:text="Register" />
 </RelativeLayout>
