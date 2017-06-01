@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -32,12 +33,25 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
+import com.pfe.mjihe.mypfe.models.Municipalite;
+import com.pfe.mjihe.mypfe.models.User;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AccueilFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mRef;
+    private FirebaseUser mUser;
     private TextView nomm, infom;
     private ImageView logom;
     private MapView mapview;
@@ -46,17 +60,24 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private boolean permission = false;
-    private String slocal = "local";
+    private String slocal;
+    private String gov, comu, snom, sinfo, slogo;
+    private Double mlat;
+    private Double mlang;
+    private LatLng local;//= new LatLng(0,0);
+    private Municipalite mmunici;
 
     public AccueilFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootview = inflater.inflate(R.layout.fragment_accueil, container, false);
-        initview();
+        initfirebase();
+        mapview = (MapView) rootview.findViewById(R.id.mapView1);
         mapview.onCreate(savedInstanceState);
         mapview.getMapAsync(this);
         if (mGoogleApiClient == null) {
@@ -66,19 +87,18 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
                     .addApi(LocationServices.API)
                     .build();
         }
-        initGps();
+        initview();
+        getadressuseer();
         return rootview;
     }
-
     public void onResume() {
         mapview.onResume();
         super.onResume();
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapview.onDestroy();
+
     }
 
     @Override
@@ -91,8 +111,6 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
         nomm = (TextView) rootview.findViewById(R.id.nomM);
         infom = (TextView) rootview.findViewById(R.id.infomun);
         logom = (ImageView) rootview.findViewById(R.id.imageView2);
-        mapview = (MapView) rootview.findViewById(R.id.mapView1);
-
     }
 
     @Override
@@ -104,20 +122,14 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
                         PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
             map.getUiSettings().setMyLocationButtonEnabled(true);
-            LatLng local = new LatLng(36.874171, 10.272561);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 13));
-            map.addMarker(new MarkerOptions()
-                    .position(local)
-                    .title(slocal));
+
         } else {
             ActivityCompat.requestPermissions(getActivity(), new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION},
                     1);
         }
-
     }
-
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -185,5 +197,61 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
         }
+    }
+
+    private void initfirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        mRef = mDatabase.getReference();
+        mUser = mAuth.getCurrentUser();
+    }
+
+    private void getadressuseer() {
+        initfirebase();
+        mRef.child("user").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                gov = user.getGouvernorat();
+                comu = user.getLocalite();
+                getdata();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void getdata() {
+        mRef.child("Region").child(gov).child(comu).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mmunici = dataSnapshot.getValue(Municipalite.class);
+                Log.d("adress", "user1: " + mmunici.toString());
+                snom = mmunici.getNom();
+                slocal = snom;
+                String ilat, ilang;
+                Log.d("adress", "user1: " + String.valueOf(mmunici.getLat()));
+                mlat = Double.parseDouble(String.valueOf(mmunici.getLat()));
+                mlang = Double.parseDouble(String.valueOf(mmunici.getLang()));
+                Log.d("adress", "user1: " + mlat);
+                local = new LatLng(mlat, mlang);
+                nomm.setText(snom);
+                sinfo = mmunici.getInfo();
+                infom.setText(sinfo);
+                slogo = mmunici.getLogo();
+                Glide.with(getActivity()).load(slogo).into(logom);
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 13));
+                map.addMarker(new MarkerOptions()
+                        .position(local)
+                        .title(slocal));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
     }
 }

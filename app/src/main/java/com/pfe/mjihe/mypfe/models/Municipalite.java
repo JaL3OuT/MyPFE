@@ -1,31 +1,35 @@
 package com.pfe.mjihe.mypfe.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Mjihe on 31/05/2017.
  */
 
-public class Municipalite {
-    private String nomM, logo, info;
-    private double latm, langm;
-
-    public Municipalite(String nomM, String logo, String info, String coordoné, double latm, double langm) {
-        this.nomM = nomM;
-        this.logo = logo;
-        this.info = info;
-        this.latm = latm;
-        this.langm = langm;
-    }
+public class Municipalite implements Serializable {
+    private String Nom, logo, info;
+    private Double Lat;
+    private Double lang;
 
     public Municipalite() {
 
     }
 
-    public String getNomM() {
-        return nomM;
+    public Municipalite(String Nom, String logo, String info, double lat, double lang) {
+        this.Nom = Nom;
+        this.logo = logo;
+        this.info = info;
+        this.Lat = lat;
+        this.lang = lang;
     }
 
-    public void setNomM(String nomM) {
-        this.nomM = nomM;
+
+    public String getNom() {
+        return Nom;
+    }
+
+    public void setNom(String nom) {
+        this.Nom = nom;
     }
 
     public String getLogo() {
@@ -45,19 +49,28 @@ public class Municipalite {
     }
 
 
-    public double getLatm() {
-        return latm;
+    public Double getLat() {
+        return Lat;
     }
 
-    public void setLatm(double latm) {
-        this.latm = latm;
+    public void setLat(Double lat) {
+        this.Lat = lat;
     }
 
-    public double getLangm() {
-        return langm;
+    public Double getLang() {
+        return lang;
     }
 
-    public void setLangm(double langm) {
-        this.langm = langm;
+    public void setLang(Double lang) {
+        this.lang = lang;
+    }
+
+    public String toString() {
+        return "Municipalite{" +
+                "nom" + Nom +
+                "info" + info +
+                "logo" + logo +
+                "Lat" + Lat +
+                "lang" + lang + " }";
     }
 }

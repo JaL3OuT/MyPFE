@@ -41,11 +41,9 @@ public class User implements Serializable {
     public void setGouvernorat(String gouvernorat) {
         this.gouvernorat = gouvernorat;
     }
-
     public String getComunn() {
         return comunn;
     }
-
     public void setComunn(String comunn) {
         this.comunn = comunn;
     }
@@ -61,19 +59,15 @@ public class User implements Serializable {
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
-
     public String getLocalite() {
         return localite;
     }
-
     public void setLocalite(String localite) {
         this.localite = localite;
     }
-
     public String getCIN() {
         return CIN;
     }
-
     public void setCIN(String CIN) {
         this.CIN = CIN;
     }

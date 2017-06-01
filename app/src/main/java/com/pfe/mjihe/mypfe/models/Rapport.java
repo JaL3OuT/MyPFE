@@ -1,10 +1,12 @@
 package com.pfe.mjihe.mypfe.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Mjihe on 12/05/2017.
  */
 
-public class Rapport {
+public class Rapport implements Serializable {
     private String ruid;
     private String url;
     private String rapportcontent;
