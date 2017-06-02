@@ -38,9 +38,11 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity android:name=".activities.SplashAppScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -57,7 +59,11 @@
         <activity android:name=".activities.AddWalletFragment" />
         <activity android:name=".activities.WalletActivity" />
         <activity android:name=".activities.CodePinWallet" />
+        <activity android:name=".admin.Ajoutlot" />
 
+        <activity
+            android:name=".admin.mapLotActivity"
+            android:label="@string/title_activity_map_lot"></activity>
     </application>
 
 </manifest>

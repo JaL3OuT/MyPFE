@@ -216,7 +216,6 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
                 comu = user.getLocalite();
                 getdata();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -245,13 +244,11 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 13));
                 map.addMarker(new MarkerOptions()
                         .position(local)
-                        .title(slocal));
+                        .title(slocal).snippet("Municipalité de " + slocal));
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-
     }
 }

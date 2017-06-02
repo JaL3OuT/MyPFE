@@ -1,4 +1,4 @@
-package com.pfe.mjihe.mypfe.admin.fragment;
+package com.pfe.mjihe.mypfe.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,26 +27,22 @@ public class RapportAdapter extends RecyclerView.Adapter<RapportAdapter.MyViewHo
                 .inflate(R.layout.rapport_row, parent, false);
         return new MyViewHolder(itemView);
     }
-
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Rapport rapport = rapportList.get(position);
         holder.date.setText(rapport.getDate());
-        holder.raport.setText(rapport.getRapportcontent());
+        holder.raport.setText(rapport.getRapport());
         holder.uid.setText(rapport.getRuidUid());
         // if (rapport.getLocation()== null)
         //{
         //  holder.latlan.setText("pas de localisation");
-
         //}
     }
-
     public int getItemCount() {
         return rapportList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView date, raport, uid, latlan;
-
         public MyViewHolder(View View) {
             super(View);
             date = (TextView) View.findViewById(R.id.date);

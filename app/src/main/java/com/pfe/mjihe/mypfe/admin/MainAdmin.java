@@ -43,7 +43,6 @@ public class MainAdmin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_admin);
         mAuth = FirebaseAuth.getInstance();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -53,13 +52,9 @@ public class MainAdmin extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-
     }
 
 
@@ -85,7 +80,6 @@ public class MainAdmin extends AppCompatActivity {
             startActivity(in);
             finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -103,20 +97,19 @@ public class MainAdmin extends AppCompatActivity {
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = new BlankFragment();
+            Fragment fragment;
             switch (position) {
                 case 0:
                     fragment = new MapTabedCitoyen();
                     break;
                 case 1:
                     fragment = MapCity.newInstance(4);
-                    MapCity.newInstance(30).show(getSupportFragmentManager(), "dialog");
                     break;
                 case 2:
                     fragment = new rapport();
+                    recreate();
 
                     break;
                 default:

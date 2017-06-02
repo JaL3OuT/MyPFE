@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Rapport implements Serializable {
     private String ruid;
     private String url;
-    private String rapportcontent;
+    private String rapport;
     private String date;
     private double lati, langi;
 
@@ -19,18 +19,18 @@ public class Rapport implements Serializable {
     public Rapport(String uid, String url, String rapportcontent, String date, double lati, double langi) {
         this.ruid = uid;
         this.url = url;
-        this.rapportcontent = rapportcontent;
+        this.rapport = rapportcontent;
         this.date = date;
         this.lati = lati;
         this.langi = langi;
     }
 
-    public String getRapportcontent() {
-        return rapportcontent;
+    public String getRapport() {
+        return rapport;
     }
 
-    public void setRapportcontent(String rapportcontent) {
-        this.rapportcontent = rapportcontent;
+    public void setRapport(String rapport) {
+        this.rapport = rapport;
     }
 
     public String getRuidUid() {
