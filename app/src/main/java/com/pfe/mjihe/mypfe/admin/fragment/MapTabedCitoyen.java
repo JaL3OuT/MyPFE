@@ -28,6 +28,7 @@ import com.pfe.mjihe.mypfe.admin.Ajoutlot;
 import com.pfe.mjihe.mypfe.admin.mapLotActivity;
 import com.pfe.mjihe.mypfe.models.Lot;
 import com.pfe.mjihe.mypfe.models.User;
+import com.pfe.mjihe.mypfe.utils.DividerItemDecoration;
 import com.pfe.mjihe.mypfe.utils.ItemClickSupport;
 
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class MapTabedCitoyen extends Fragment {
         RecyclerView.LayoutManager mLayoutmanager = new LinearLayoutManager(getActivity());
         recyclerlot.setLayoutManager(mLayoutmanager);
         recyclerlot.setItemAnimator(new DefaultItemAnimator());
+        recyclerlot.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerlot.setAdapter(mlotAdapter);
         ItemClickSupport.addTo(recyclerlot).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
@@ -132,6 +134,7 @@ public class MapTabedCitoyen extends Fragment {
                     Lot mlot = lotSnapshot.getValue(Lot.class);
                     mLotList.add(mlot);
                     Log.e("TAG", "onDataChange: " + mLotList.size());
+                    Log.e("true", "payment" + mlot.getPayment().toString());
                 }
                 mlotAdapter.notifyDataSetChanged();
 

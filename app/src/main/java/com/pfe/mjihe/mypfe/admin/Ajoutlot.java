@@ -1,11 +1,11 @@
 package com.pfe.mjihe.mypfe.admin;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.pfe.mjihe.mypfe.R;
 
-public class Ajoutlot extends AppCompatActivity {
+public class Ajoutlot extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -28,7 +28,6 @@ import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.admin.MainAdmin;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
     String etat;
     private FirebaseAuth mAuth;
     private Button bLogin;

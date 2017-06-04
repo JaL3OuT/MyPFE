@@ -12,9 +12,7 @@ public class Lot implements Serializable {
     private Boolean payment;
 
     public Lot() {
-
     }
-
     public Lot(String cin, String numlot, Double latlot, Double laglot, Double taxe, Boolean payment) {
         this.cin = cin;
         this.numlot = numlot;
@@ -23,7 +21,6 @@ public class Lot implements Serializable {
         this.taxe = taxe;
         this.payment = payment;
     }
-
     public String getCin() {
         return cin;
     }

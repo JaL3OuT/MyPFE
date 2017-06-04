@@ -22,6 +22,7 @@ import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.adapters.RapportAdapter;
 import com.pfe.mjihe.mypfe.models.Rapport;
 import com.pfe.mjihe.mypfe.models.User;
+import com.pfe.mjihe.mypfe.utils.DividerItemDecoration;
 import com.pfe.mjihe.mypfe.utils.ItemClickSupport;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class rapport extends Fragment {
         RecyclerView.LayoutManager mLayoutmanager = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(mLayoutmanager);
         recycler.setItemAnimator(new DefaultItemAnimator());
+        recycler.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recycler.setAdapter(mAdapter);
         ItemClickSupport.addTo(recycler).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
