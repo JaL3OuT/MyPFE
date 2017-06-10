@@ -24,8 +24,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -204,14 +202,12 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
                     Lot lot = mLotList.get(i);
                     mlat = Double.parseDouble(String.valueOf(lot.getLatlot()));
                     mlang = Double.parseDouble(String.valueOf(lot.getLaglot()));
-                    num = lot.getNumlot().toString();
-                    cin = lot.getCin().toString();
+                    num = lot.getNumlot();
+                    cin = lot.getCin();
                     Log.e("TAG", "lag: " + lot.getLaglot().toString());
                     Log.e("TAG", "lat: " + lot.getLatlot().toString());
 
-                    LatLng lotadd = new LatLng(mlat, mlang);
 
-                    mMap.addMarker(new MarkerOptions().position(lotadd).title(num).snippet(cin));
                 }
             }
 

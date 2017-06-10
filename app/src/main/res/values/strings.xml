@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Smart Municipality</string>
+    <string-array name="ajoutlot">
+        <item>non payer</item>
+        <item> payer </item>
+    </string-array>
     <string-array name="gov">
         <item>Ariana</item>
         <item>Béja</item>

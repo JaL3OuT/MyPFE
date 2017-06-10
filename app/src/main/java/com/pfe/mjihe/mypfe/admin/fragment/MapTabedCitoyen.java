@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.adapters.LotAdapter;
 import com.pfe.mjihe.mypfe.admin.Ajoutlot;
+import com.pfe.mjihe.mypfe.admin.LotView;
 import com.pfe.mjihe.mypfe.admin.mapLotActivity;
 import com.pfe.mjihe.mypfe.models.Lot;
 import com.pfe.mjihe.mypfe.models.User;
@@ -94,7 +95,10 @@ public class MapTabedCitoyen extends Fragment {
         ItemClickSupport.addTo(recyclerlot).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Toast.makeText(getActivity(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), mLotList.get(position).getNumlot().toString(), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getActivity(), LotView.class);
+                i.putExtra("num lot", mLotList.get(position).getNumlot().toString());
+                startActivity(i);
                 // do it
             }
         });
@@ -123,19 +127,19 @@ public class MapTabedCitoyen extends Fragment {
             }
         });
     }
-
     private void lotData() {
         initFirebase();
         mLotList.removeAll(mLotList);
-        mRef.child("Region").child(gov).child(comun).child("Lot").addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("Region").child(gov).child(comun).child("Lot").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot lotSnapshot : dataSnapshot.getChildren()) {
                     Lot mlot = lotSnapshot.getValue(Lot.class);
                     mLotList.add(mlot);
-                    Log.e("TAG", "onDataChange: " + mLotList.size());
                     Log.e("true", "payment" + mlot.getPayment().toString());
                 }
+                Log.e("TAG", "onDataChange: " + mLotList.size());
+
                 mlotAdapter.notifyDataSetChanged();
 
             }
