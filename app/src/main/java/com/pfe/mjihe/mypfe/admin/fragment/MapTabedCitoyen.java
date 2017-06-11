@@ -1,8 +1,10 @@
 package com.pfe.mjihe.mypfe.admin.fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,12 +31,15 @@ import com.pfe.mjihe.mypfe.adapters.LotAdapter;
 import com.pfe.mjihe.mypfe.admin.Ajoutlot;
 import com.pfe.mjihe.mypfe.admin.LotView;
 import com.pfe.mjihe.mypfe.admin.mapLotActivity;
+import com.pfe.mjihe.mypfe.models.Factures;
 import com.pfe.mjihe.mypfe.models.Lot;
 import com.pfe.mjihe.mypfe.models.User;
 import com.pfe.mjihe.mypfe.utils.DividerItemDecoration;
 import com.pfe.mjihe.mypfe.utils.ItemClickSupport;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,6 +61,9 @@ public class MapTabedCitoyen extends Fragment {
     private List<Lot> mLotList = new ArrayList<>();
     private List<Lot> nLotList = new ArrayList<>();
     private List<User> nUserList = new ArrayList<>();
+    private long datestamp;
+    private String date;
+    private ProgressDialog mDialog;
 
 
     public MapTabedCitoyen() {
@@ -96,6 +106,7 @@ public class MapTabedCitoyen extends Fragment {
         nottifier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDialog.show();
                 comparerCin();
             }
         });
@@ -115,6 +126,9 @@ public class MapTabedCitoyen extends Fragment {
                 // do it
             }
         });
+        mDialog = new ProgressDialog(getActivity());
+        mDialog.setTitle("Chargment");
+        mDialog.setMessage("Attendez SVP !!");
     }
 
     private void initFirebase() {
@@ -221,11 +235,28 @@ public class MapTabedCitoyen extends Fragment {
                 Log.e("TAG", "USER CIN  = : " + nUserList.get(j).getCIN());
                 if (nLotList.get(i).getCin().equals(nUserList.get(j).getCIN())) {
                     Log.e("TAG", "CIN : exist = " + nUserList.get(j).getCIN());
+                    getdate();
+                    Factures mfac = new Factures(String.valueOf(nLotList.get(i).getNumlot()), date, Boolean.valueOf(nLotList.get(i).getPayment()),
+                            Double.valueOf(nLotList.get(i).getTaxe()), Double.valueOf(nLotList.get(i).getLatlot()), Double.valueOf(nLotList.get(i).getLaglot()));
+                    mRef.child("factures").child(nUserList.get(j).getCIN().toString()).setValue(mfac).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            mDialog.dismiss();
+                            Toast.makeText(getActivity(), "Notification envoyer ", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                 }
             }
         }
 
+    }
+
+    private void getdate() {
+        datestamp = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        Date netDate = (new Date(datestamp));
+        date = sdf.format(netDate);
     }
 
 }
