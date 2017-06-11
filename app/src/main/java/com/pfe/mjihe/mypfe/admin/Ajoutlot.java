@@ -56,7 +56,6 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
         mDialog.setTitle("Chargment");
         mDialog.setMessage("Attendez SVP !!");
     }
-
     @Override
     public void onClick(View v) {
         if (!isEmpty()) {

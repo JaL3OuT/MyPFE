@@ -21,9 +21,12 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,10 +54,10 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
     private Location mLastLocation;
     private List<Lot> mLotList = new ArrayList<>();
     private Lot mlot;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initGps();
         setContentView(R.layout.activity_mapslot);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -67,10 +70,9 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
                     .addApi(LocationServices.API)
                     .build();
         }
-        initGps();
+
         getadressAdmin();
     }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -202,15 +204,17 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
                     Lot lot = mLotList.get(i);
                     mlat = Double.parseDouble(String.valueOf(lot.getLatlot()));
                     mlang = Double.parseDouble(String.valueOf(lot.getLaglot()));
+                    LatLng adress = new LatLng(mlat, mlang);
                     num = lot.getNumlot();
                     cin = lot.getCin();
                     Log.e("TAG", "lag: " + lot.getLaglot().toString());
                     Log.e("TAG", "lat: " + lot.getLatlot().toString());
-
-
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(adress, 13));
+                    mMap.addMarker(new MarkerOptions()
+                            .position(adress)
+                            .title(num).snippet(cin));
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 

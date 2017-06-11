@@ -38,7 +38,6 @@ public class SplashAppScreen extends Activity {
             finish();
         }
     }
-
     private void getUserDetail() {
         DatabaseReference mReference = FirebaseDatabase.getInstance().getReference("user").child(mAuth.getCurrentUser().getUid());
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {

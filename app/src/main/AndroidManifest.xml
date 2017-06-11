@@ -64,7 +64,8 @@
         <activity
             android:name=".admin.mapLotActivity"
             android:label="@string/title_activity_map_lot" />
-        <activity android:name=".admin.LotView"></activity>
+        <activity android:name=".admin.LotView" />
+        <activity android:name=".admin.AjoutTraveau"></activity>
     </application>
 
 </manifest>

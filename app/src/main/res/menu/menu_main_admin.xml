@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.pfe.mjihe.mypfe.admin.MainAdmin">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/logoutAdmin"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:title="logout"
+        app:showAsAction="always" />
 </menu>

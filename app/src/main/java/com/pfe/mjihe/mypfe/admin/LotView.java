@@ -73,7 +73,7 @@ public class LotView extends Activity implements View.OnClickListener, OnMapRead
         mapLotv.onCreate(savedInstanceState);
         mapLotv.getMapAsync(this);
         if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
+            mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
@@ -146,7 +146,6 @@ public class LotView extends Activity implements View.OnClickListener, OnMapRead
                 String scin = String.valueOf(mlot.getCin());
                 cin.setText(scin);
                 boolean bpay = mlot.getPayment();
-
                 if (bpay == true) {
                     pay.setSelection(1);
                 } else {
@@ -263,6 +262,23 @@ public class LotView extends Activity implements View.OnClickListener, OnMapRead
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
         }
+    }
+
+    public void onResume() {
+        mapLotv.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapLotv.onLowMemory();
     }
 
 }

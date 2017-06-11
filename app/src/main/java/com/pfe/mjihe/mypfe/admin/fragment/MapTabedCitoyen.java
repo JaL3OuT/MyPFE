@@ -49,7 +49,12 @@ public class MapTabedCitoyen extends Fragment {
     private FloatingActionButton nottifier;
     private RecyclerView recyclerlot;
     private LotAdapter mlotAdapter;
+    private Lot mlot;
+    private User nUser;
     private List<Lot> mLotList = new ArrayList<>();
+    private List<Lot> nLotList = new ArrayList<>();
+    private List<User> nUserList = new ArrayList<>();
+
 
     public MapTabedCitoyen() {
         // Required empty public constructor
@@ -64,6 +69,8 @@ public class MapTabedCitoyen extends Fragment {
         rootview = inflater.inflate(R.layout.fragment_map_tabed_citoyen, container, false);
         initView();
         getadressAdmin();
+        getuserlist();
+        getadressAdmin1();
         return rootview;
     }
 
@@ -86,6 +93,12 @@ public class MapTabedCitoyen extends Fragment {
         });
         mlotAdapter = new LotAdapter(mLotList);
         nottifier = (FloatingActionButton) rootview.findViewById(R.id.notiffier);
+        nottifier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comparerCin();
+            }
+        });
         recyclerlot = (RecyclerView) rootview.findViewById(R.id.recycler_lot);
         RecyclerView.LayoutManager mLayoutmanager = new LinearLayoutManager(getActivity());
         recyclerlot.setLayoutManager(mLayoutmanager);
@@ -136,18 +149,83 @@ public class MapTabedCitoyen extends Fragment {
                 for (DataSnapshot lotSnapshot : dataSnapshot.getChildren()) {
                     Lot mlot = lotSnapshot.getValue(Lot.class);
                     mLotList.add(mlot);
-                    Log.e("true", "payment" + mlot.getPayment().toString());
                 }
-                Log.e("TAG", "onDataChange: " + mLotList.size());
-
                 mlotAdapter.notifyDataSetChanged();
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-}
+    }
+
+    private void getuserlist() {
+        nUserList.removeAll(nUserList);
+        mRef.child("user").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    nUser = userSnapshot.getValue(User.class);
+                    gov = nUser.getGouvernorat();
+                    comun = nUser.getComunn();
+                    Log.e("TAG", "NUSER " + String.valueOf(nUser.getCIN()));
+                    nUserList.add(nUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getadressAdmin1() {
+        initFirebase();
+        mRef.child("user").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                gov = user.getGouvernorat();
+                comun = user.getComunn();
+                lotList();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void lotList() {
+        mRef.child("Region").child(gov).child(comun).child("Lot").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot lotSnapshot : dataSnapshot.getChildren()) {
+                    mlot = lotSnapshot.getValue(Lot.class);
+                    Log.e("TAG", "LOT " + String.valueOf(mlot.getCin()));
+                    nLotList.add(mlot);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void comparerCin() {
+        for (int i = 0; i < nLotList.size(); i++) {
+            Log.e("TAG", "i = : " + i);
+            Log.e("TAG", "nlot CIN = : " + nLotList.get(i).getCin());
+            for (int j = 0; j < nUserList.size(); j++) {
+                Log.e("TAG", "USER CIN  = : " + nUserList.get(j).getCIN());
+                if (nLotList.get(i).getCin().equals(nUserList.get(j).getCIN())) {
+                    Log.e("TAG", "CIN : exist = " + nUserList.get(j).getCIN());
+
+                }
+            }
+        }
+
+    }
+
 }

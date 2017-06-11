@@ -27,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.fragments.AccueilFragment;
-import com.pfe.mjihe.mypfe.fragments.FragmentMap;
 import com.pfe.mjihe.mypfe.fragments.RepportFragment;
 import com.pfe.mjihe.mypfe.fragments.WalletFragment;
 import com.pfe.mjihe.mypfe.models.User;
@@ -134,9 +133,6 @@ public class MainActivity extends AppCompatActivity
             fm.beginTransaction().replace(R.id.container, new AccueilFragment()).commit();
         }
 
-        if (id == R.id.map) {
-            fm.beginTransaction().replace(R.id.container, new FragmentMap()).commit();
-        }
         if (id == R.id.wallet) {
             testexist = pref.getString("IS_EXIST", "No");
             if (testexist.equals("true")) {

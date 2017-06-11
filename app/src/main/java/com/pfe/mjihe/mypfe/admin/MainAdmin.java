@@ -15,9 +15,8 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.activities.LoginActivity;
-import com.pfe.mjihe.mypfe.admin.fragment.BlankFragment;
-import com.pfe.mjihe.mypfe.admin.fragment.MapCity;
 import com.pfe.mjihe.mypfe.admin.fragment.MapTabedCitoyen;
+import com.pfe.mjihe.mypfe.admin.fragment.Traveaux_admin_fragment;
 import com.pfe.mjihe.mypfe.admin.fragment.rapport;
 
 public class MainAdmin extends AppCompatActivity {
@@ -73,7 +72,7 @@ public class MainAdmin extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.logoutAdmin) {
             mAuth.signOut();
             Intent in = new Intent(MainAdmin.this, LoginActivity.class);
             in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -105,15 +104,13 @@ public class MainAdmin extends AppCompatActivity {
                     fragment = new MapTabedCitoyen();
                     break;
                 case 1:
-                    fragment = MapCity.newInstance(4);
+                    fragment = new Traveaux_admin_fragment();
                     break;
                 case 2:
                     fragment = new rapport();
-                    recreate();
-
                     break;
                 default:
-                    fragment = new BlankFragment();
+                    fragment = new MapTabedCitoyen();
                     break;
             }
             // getItem is called to instantiate the fragment for the given page.

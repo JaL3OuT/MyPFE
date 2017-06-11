@@ -98,9 +98,7 @@ public class AccueilFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
-
     @Override
     public void onLowMemory() {
         super.onLowMemory();
