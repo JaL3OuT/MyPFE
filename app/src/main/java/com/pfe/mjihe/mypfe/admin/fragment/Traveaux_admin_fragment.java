@@ -24,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.adapters.TraveauxAdapter;
 import com.pfe.mjihe.mypfe.admin.AjoutTraveau;
+import com.pfe.mjihe.mypfe.admin.MapTraveauxActivity;
+import com.pfe.mjihe.mypfe.admin.TraveauView;
 import com.pfe.mjihe.mypfe.models.Traveaux;
 import com.pfe.mjihe.mypfe.models.User;
 import com.pfe.mjihe.mypfe.utils.DividerItemDecoration;
@@ -81,6 +83,13 @@ public class Traveaux_admin_fragment extends Fragment {
             }
         });
         bmaptrave = (Button) rootview.findViewById(R.id.maptraveaux);
+        bmaptrave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i1 = new Intent(getActivity(), MapTraveauxActivity.class);
+                startActivity(i1);
+            }
+        });
         recyclertraveaux = (RecyclerView) rootview.findViewById(R.id.recyclerTraveau);
         RecyclerView.LayoutManager mLayoutmanager = new LinearLayoutManager(getActivity());
         recyclertraveaux.setLayoutManager(mLayoutmanager);
@@ -93,6 +102,9 @@ public class Traveaux_admin_fragment extends Fragment {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 Toast.makeText(getActivity(), mTraveauListe.get(position).getIdtraveau().toString(), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getActivity(), TraveauView.class);
+                i.putExtra("id traveau", mTraveauListe.get(position).getIdtraveau().toString());
+                startActivity(i);
             }
         });
     }

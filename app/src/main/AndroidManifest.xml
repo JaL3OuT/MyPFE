@@ -65,7 +65,16 @@
             android:name=".admin.mapLotActivity"
             android:label="@string/title_activity_map_lot" />
         <activity android:name=".admin.LotView" />
-        <activity android:name=".admin.AjoutTraveau"></activity>
+        <activity android:name=".admin.AjoutTraveau" />
+        <activity android:name=".admin.TraveauView" />
+        <activity
+            android:name=".admin.MapTraveauxActivity"
+            android:label="@string/title_activity_map_traveaux" />
+
+        <service
+            android:name=".utils.MyService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

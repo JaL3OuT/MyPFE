@@ -154,6 +154,7 @@ public class MapTabedCitoyen extends Fragment {
             }
         });
     }
+
     private void lotData() {
         initFirebase();
         mLotList.removeAll(mLotList);
@@ -166,6 +167,7 @@ public class MapTabedCitoyen extends Fragment {
                 }
                 mlotAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -238,7 +240,7 @@ public class MapTabedCitoyen extends Fragment {
                     getdate();
                     Factures mfac = new Factures(String.valueOf(nLotList.get(i).getNumlot()), date, Boolean.valueOf(nLotList.get(i).getPayment()),
                             Double.valueOf(nLotList.get(i).getTaxe()), Double.valueOf(nLotList.get(i).getLatlot()), Double.valueOf(nLotList.get(i).getLaglot()));
-                    mRef.child("factures").child(nUserList.get(j).getCIN().toString()).setValue(mfac).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mRef.child("factures").child(nUserList.get(j).getCIN().toString()).child(nLotList.get(i).getNumlot().toString()).setValue(mfac).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             mDialog.dismiss();
@@ -249,7 +251,6 @@ public class MapTabedCitoyen extends Fragment {
                 }
             }
         }
-
     }
 
     private void getdate() {

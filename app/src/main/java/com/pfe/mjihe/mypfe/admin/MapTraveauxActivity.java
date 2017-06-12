@@ -35,13 +35,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
-import com.pfe.mjihe.mypfe.models.Lot;
+import com.pfe.mjihe.mypfe.models.Traveaux;
 import com.pfe.mjihe.mypfe.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class mapLotActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapTraveauxActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     private Double mlat, mlang;
     private String gov, comun;
     private FirebaseDatabase mDatabase;
@@ -52,13 +53,12 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
     private GoogleApiClient mGoogleApiClient;
     private boolean permission = false;
     private Location mLastLocation;
-    private List<Lot> mLotList = new ArrayList<>();
-    private Lot mlot;
+    private List<Traveaux> mTraveauListe = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initGps();
-        setContentView(R.layout.activity_mapslot);
+        setContentView(R.layout.activity_map_traveaux);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -70,13 +70,12 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
                     .addApi(LocationServices.API)
                     .build();
         }
-
         getadressAdmin();
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
@@ -92,7 +91,15 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
         }
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
+    }
 
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
@@ -107,7 +114,7 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
-                    ActivityCompat.requestPermissions(mapLotActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
+                    ActivityCompat.requestPermissions(MapTraveauxActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -156,15 +163,6 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
         }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     private void initFirebase() {
         mDatabase = FirebaseDatabase.getInstance();
@@ -181,7 +179,7 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
                 User user = dataSnapshot.getValue(User.class);
                 gov = user.getGouvernorat();
                 comun = user.getComunn();
-                lotData();
+                traveauxData();
             }
 
             @Override
@@ -190,31 +188,33 @@ public class mapLotActivity extends FragmentActivity implements OnMapReadyCallba
         });
     }
 
-    private void lotData() {
+    private void traveauxData() {
         initFirebase();
-        mRef.child("Region").child(gov).child(comun).child("Lot").addListenerForSingleValueEvent(new ValueEventListener() {
+        mTraveauListe.removeAll(mTraveauListe);
+        mRef.child("Region").child(gov).child(comun).child("traveaux").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot lotSnapshot : dataSnapshot.getChildren()) {
-                    mlot = lotSnapshot.getValue(Lot.class);
-                    mLotList.add(mlot);
+                Log.e("TAG", "children count " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot traveauSnapshot : dataSnapshot.getChildren()) {
+                    Traveaux mTraveaux = traveauSnapshot.getValue(Traveaux.class);
+                    Log.e("TAG", "id TRaveau : " + mTraveaux.getIdtraveau());
+                    mTraveauListe.add(mTraveaux);
                 }
-                for (int i = 0; i < mLotList.size(); i++) {
-                    String num, cin = "___";
-                    Lot lot = mLotList.get(i);
-                    mlat = Double.parseDouble(String.valueOf(lot.getLatlot()));
-                    mlang = Double.parseDouble(String.valueOf(lot.getLaglot()));
+                for (int i = 0; i < mTraveauListe.size(); i++) {
+                    String num, date = "___";
+                    Traveaux traveauM = mTraveauListe.get(i);
+                    num = traveauM.getIdtraveau().toString();
+                    date = traveauM.getDate().toString();
+                    mlang = Double.valueOf(traveauM.getTraLang());
+                    mlat = Double.valueOf(traveauM.getTraLat());
                     LatLng adress = new LatLng(mlat, mlang);
-                    num = lot.getNumlot();
-                    cin = lot.getCin();
-                    Log.e("TAG", "lag: " + lot.getLaglot().toString());
-                    Log.e("TAG", "lat: " + lot.getLatlot().toString());
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(adress, 13));
                     mMap.addMarker(new MarkerOptions()
                             .position(adress)
-                            .title(num).snippet(cin));
+                            .title(num).snippet(date));
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 

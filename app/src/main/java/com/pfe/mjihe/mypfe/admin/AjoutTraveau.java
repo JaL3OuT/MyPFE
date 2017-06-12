@@ -32,7 +32,6 @@ public class AjoutTraveau extends Activity {
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
-
     private Traveaux mTraveau;
 
     @Override
@@ -121,4 +120,5 @@ public class AjoutTraveau extends Activity {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
     }
+
 }

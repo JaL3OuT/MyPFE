@@ -30,6 +30,7 @@ import com.pfe.mjihe.mypfe.fragments.AccueilFragment;
 import com.pfe.mjihe.mypfe.fragments.RepportFragment;
 import com.pfe.mjihe.mypfe.fragments.WalletFragment;
 import com.pfe.mjihe.mypfe.models.User;
+import com.pfe.mjihe.mypfe.utils.MyService;
 
 
 public class MainActivity extends AppCompatActivity
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity
         dialog.setMessage("attendez svp !!!!");
         dialog.show();
         initInstance();
-
+        Intent in = new Intent(MainActivity.this, MyService.class);
+        startService(in);
         getWalletTest();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

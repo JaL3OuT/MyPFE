@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +22,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
+import com.pfe.mjihe.mypfe.models.Factures;
 import com.pfe.mjihe.mypfe.models.Lot;
 import com.pfe.mjihe.mypfe.models.User;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Ajoutlot extends Activity implements View.OnClickListener {
     private EditText numlot, cin, lat, lang, taxe;
@@ -34,6 +40,10 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
     private FirebaseUser mUser;
     private Lot mlot;
     private ProgressDialog mDialog;
+    private ArrayList<User> nUserList = new ArrayList<>();
+    private long datestamp;
+    private String date;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +51,7 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_ajoutlot);
         initFirebase();
         intview();
+        getUserList();
     }
 
     private void intview() {
@@ -79,20 +90,17 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
                     mRef.child("Region").child(gov).child(comun).child("Lot").child(numlot.getText().toString()).setValue(mlot).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            mDialog.dismiss();
                             Toast.makeText(Ajoutlot.this, "lot ajouter", Toast.LENGTH_SHORT).show();
+                            comparerCin();
                         }
                     });
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
         }
     }
-
-
     private void initFirebase() {
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();
@@ -125,5 +133,49 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
 
 
         return empty;
+    }
+
+    private void getUserList() {
+        mRef.child("user").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    User nUser = userSnapshot.getValue(User.class);
+                    Log.e("TAG", "NUSER " + String.valueOf(nUser.getCIN()));
+                    nUserList.add(nUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void comparerCin() {
+        for (int j = 0; j < nUserList.size(); j++) {
+            Log.e("TAG", "USER CIN  = : " + nUserList.get(j).getCIN());
+            if (mlot.getCin().equals(nUserList.get(j).getCIN())) {
+                Log.e("TAG", "CIN : exist = " + nUserList.get(j).getCIN());
+                getdate();
+                Factures mfac = new Factures(String.valueOf(mlot.getNumlot()), date, Boolean.valueOf(mlot.getPayment()),
+                        Double.valueOf(mlot.getTaxe()), Double.valueOf(mlot.getLatlot()), Double.valueOf(mlot.getLaglot()));
+                mRef.child("factures").child(nUserList.get(j).getCIN().toString()).child(mlot.getNumlot().toString()).setValue(mfac).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Notification envoyer ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        }
+    }
+
+    private void getdate() {
+        datestamp = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        Date netDate = (new Date(datestamp));
+        date = sdf.format(netDate);
     }
 }
