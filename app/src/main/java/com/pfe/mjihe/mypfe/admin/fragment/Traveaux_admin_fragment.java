@@ -65,7 +65,6 @@ public class Traveaux_admin_fragment extends Fragment {
         getadressAdmin();
         return rootview;
     }
-
     private void initFirebase() {
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();

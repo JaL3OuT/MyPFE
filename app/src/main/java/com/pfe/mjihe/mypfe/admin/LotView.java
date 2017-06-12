@@ -96,9 +96,7 @@ public class LotView extends Activity implements View.OnClickListener, OnMapRead
         eng = (Button) findViewById(R.id.enrlot);
         mod.setOnClickListener(this);
         eng.setOnClickListener(this);
-
     }
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.modlot) {
@@ -166,7 +164,6 @@ public class LotView extends Activity implements View.OnClickListener, OnMapRead
             }
         });
     }
-
     private void initFirebase() {
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference();

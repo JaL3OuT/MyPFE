@@ -84,11 +84,11 @@ public class MyService extends Service {
 
     private void showNotification() {
         Intent in = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, in, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, in, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("Nouvelle facture ajouter")
-                .setContentText("Vous avez une nouvelle factures")
+                .setContentTitle("Nouvelle facture ")
+                .setContentText("Vous avez une nouvelle factures a payer")
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.logoapp))
                 .setSmallIcon(R.mipmap.logoapp)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

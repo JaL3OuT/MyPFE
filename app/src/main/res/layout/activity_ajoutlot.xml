@@ -100,7 +100,7 @@
         app:layout_constraintTop_toBottomOf="@+id/adr" />
 
     <TextView
-        android:id="@+id/payment"
+        android:id="@+id/paymentF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -213,7 +213,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btnajout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.379"
-        app:layout_constraintStart_toEndOf="@+id/payment"
+        app:layout_constraintStart_toEndOf="@+id/paymentF"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
         app:layout_constraintVertical_bias="0.596" />
 

@@ -7,6 +7,10 @@
             android:title="Accueil" />
 
         <item
+            android:id="@+id/factures"
+            android:icon="?android:attr/actionModeCopyDrawable"
+            android:title="factures" />
+        <item
             android:id="@+id/wallet"
             android:icon="@drawable/ic_wallet"
             android:title="Wallet" />

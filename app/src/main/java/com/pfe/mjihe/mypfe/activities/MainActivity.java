@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.fragments.AccueilFragment;
+import com.pfe.mjihe.mypfe.fragments.FacturesFragment;
 import com.pfe.mjihe.mypfe.fragments.RepportFragment;
 import com.pfe.mjihe.mypfe.fragments.WalletFragment;
 import com.pfe.mjihe.mypfe.models.User;
@@ -147,6 +148,9 @@ public class MainActivity extends AppCompatActivity
         }
         if (id == R.id.rapportadd) {
             fm.beginTransaction().replace(R.id.container, new RepportFragment()).commit();
+        }
+        if (id == R.id.factures) {
+            fm.beginTransaction().replace(R.id.container, new FacturesFragment()).commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

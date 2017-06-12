@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,7 +53,6 @@ public class AjoutTraveau extends Activity {
             @Override
             public void onClick(View v) {
                 if (!isEmpty()) {
-                    Log.e("Tag", "click" + 1);
                     mDialog.show();
                     mTraveau = new Traveaux(idT.getText().toString(), dateT.getText().toString(), Double.valueOf(budgetT.getText().toString()), dureeT.getText().toString(), Double.valueOf(latT.getText().toString()), Double.valueOf(langT.getText().toString()));
                     mRef.child("user").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

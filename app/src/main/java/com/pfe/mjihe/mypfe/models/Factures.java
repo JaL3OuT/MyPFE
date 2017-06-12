@@ -12,7 +12,7 @@ public class Factures implements Serializable {
     private boolean paymentF;
     private double somme, flang, flat;
 
-    public Factures(String date) {
+    public Factures() {
 
     }
 

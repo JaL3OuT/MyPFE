@@ -21,7 +21,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.pfe.mjihe.mypfe.R;
 import com.pfe.mjihe.mypfe.models.User;
 import com.pfe.mjihe.mypfe.models.Wallet;
-
 public class WalletActivity extends Activity implements View.OnClickListener {
     private String sommeWallet;
     private Button recharge, sup;
@@ -34,9 +33,7 @@ public class WalletActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initinstance();
-
         setContentView(R.layout.activity_wallet);
-
         initView();
     }
     public void onClick(View v) {
@@ -75,6 +72,13 @@ public class WalletActivity extends Activity implements View.OnClickListener {
             }
         });
         recharge = (Button) findViewById(R.id.recharge);
+        recharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), Recharger_Wallet.class);
+                startActivity(i);
+            }
+        });
         sup = (Button) findViewById(R.id.supprimer);
         sup.setOnClickListener(this);
     }

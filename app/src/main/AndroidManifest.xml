@@ -75,6 +75,9 @@
             android:name=".utils.MyService"
             android:enabled="true"
             android:exported="true" />
+
+        <activity android:name=".activities.FacturesView" />
+        <activity android:name=".activities.Recharger_Wallet"></activity>
     </application>
 
 </manifest>

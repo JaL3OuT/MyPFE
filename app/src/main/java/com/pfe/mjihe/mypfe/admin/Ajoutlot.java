@@ -58,7 +58,7 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
         numlot = (EditText) findViewById(R.id.alot);
         cin = (EditText) findViewById(R.id.cin);
         lat = (EditText) findViewById(R.id.aLatlot);
-        lang = (EditText) findViewById(R.id.ajouterLangLot);
+        lang = (EditText) findViewById(R.id.aLatlot);
         taxe = (EditText) findViewById(R.id.ajoutertaxe);
         payement = (Spinner) findViewById(R.id.payement);
         btnajout = (Button) findViewById(R.id.btnajout);
@@ -171,7 +171,6 @@ public class Ajoutlot extends Activity implements View.OnClickListener {
             }
         }
     }
-
     private void getdate() {
         datestamp = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
