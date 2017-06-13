@@ -32,7 +32,6 @@ public class AjoutTraveau extends Activity {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private Traveaux mTraveau;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +39,6 @@ public class AjoutTraveau extends Activity {
         initFirebase();
         initview();
     }
-
     private void initview() {
         idT = (EditText) findViewById(R.id.idTraveET);
         dateT = (EditText) findViewById(R.id.dateTraveauET);
@@ -69,7 +67,6 @@ public class AjoutTraveau extends Activity {
                                 }
                             });
                         }
-
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }

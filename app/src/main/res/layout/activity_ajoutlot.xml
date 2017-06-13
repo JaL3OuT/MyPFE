@@ -64,6 +64,7 @@
             android:id="@+id/aLatlot"
             android:layout_width="55dp"
             android:layout_height="51dp"
+            android:hint="Latitude"
             android:inputType="numberDecimal"
             android:textSize="12sp" />
     </android.support.design.widget.TextInputLayout>
@@ -82,6 +83,7 @@
             android:layout_width="64dp"
             android:layout_height="41dp"
 
+            android:hint="Longitude"
             android:inputType="numberDecimal"
             android:textSize="12sp" />
     </android.support.design.widget.TextInputLayout>
@@ -161,6 +163,7 @@
             android:layout_marginTop="24dp"
             android:ems="10"
             android:inputType="number"
+            android:maxLength="8"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.434" />
@@ -182,6 +185,7 @@
             android:id="@+id/ajoutertaxe"
             android:layout_width="154dp"
             android:layout_height="match_parent"
+            android:inputType="numberDecimal"
             android:textSize="12sp" />
     </android.support.design.widget.TextInputLayout>
 

@@ -61,6 +61,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class RepportFragment extends Fragment implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSION_REQUEST_CODE = 200;
+    private static final int RESULT_LOAD_IMG = 1;
     double lat, lang;
     long datestamp;
     private SharedPreferences prefr;
@@ -204,6 +205,10 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
     }
 
     private void importerPhoto() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Start the Intent
+        startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
     }
 
     @Override
@@ -216,11 +221,20 @@ public class RepportFragment extends Fragment implements View.OnClickListener, G
             case R.id.envoyer:
                 envoyerRapport();
                 break;
+            case R.id.importerphoto:
+                importerPhoto();
+                break;
         }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            apercu.setImageBitmap(imageBitmap);
+        }
+        if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK
+                && null != data) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             apercu.setImageBitmap(imageBitmap);
